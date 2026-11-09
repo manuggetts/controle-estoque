@@ -134,6 +134,6 @@ Com a API no ar, a documentação interativa (Swagger) fica em `http://127.0.0.1
 
 1. **Consistência dos dados.** Estoque é um número que outras áreas usam para tomar decisões. O invariante precisa valer sempre, e por isso há duas barreiras: as regras do domínio e as restrições do banco.
 2. **Testes automatizados.** Protegem as regras de negócio contra regressões e documentam o comportamento esperado. O foco foi nos casos de borda e no "estado inalterado após falha", não na quantidade de testes.
-3. **Concorrência e atomicidade.** Duas reservas simultâneas da última unidade não podem ambas ter sucesso. Transação única por operação e `BEGIN IMMEDIATE` resolvem isso numa instância, e o teste com threads demonstra o comportamento.
+3. **Concorrência e atomicidade.** Duas reservas simultâneas da última unidade não podem ambas ter sucesso. Transação única por operação e `BEGIN IMMEDIATE` resolvem isso numa instância. Os testes com threads comprovam a proteção: ao substituir `BEGIN IMMEDIATE` por `BEGIN`, os testes de concorrência falham com `database is locked`.
 4. **Separação de camadas.** Regras de negócio isoladas de banco e de HTTP permitem trocar o SQLite por outro banco, ou a API por uma fila, sem reescrever o domínio, e tornam os testes rápidos.
 5. **Capacidade de evolução e observabilidade.** Histórico de movimentações, eventos de domínio, logs e métricas permitem diagnosticar problemas e integrar novos sistemas sem mexer no núcleo.

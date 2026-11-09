@@ -67,17 +67,17 @@
 - **Técnica:** prompt estruturado com critério de priorização (severidade) e separação entre "corrigir agora" e "registrar como limitação".
 - **Validação:** riscos conferidos por leitura do código-fonte do repositório.
 - **Resultado:** quantidade sem limite máximo (valores acima de 64 bits não são aceitos pelo SQLite); erros inesperados e rotas inexistentes fora do formato de erro padrão; `.coverage` fora do `.gitignore`; erro de integridade qualquer tratado como "produto já existe".
-- **Decisão:** limite de quantidade, `.gitignore` e README corrigidos; o ponto sobre erros inesperados e rotas inexistentes foi registrado em 'Limitações' do README. tratamento de erro de integridade em inserir_produto mantido (hoje só a chave primária pode falhar)
+- **Decisão:** limite de quantidade, `.gitignore` e README corrigidos; erros inesperados e rotas inexistentes registrados em "Limitações" do README; tratamento de erro de integridade em `inserir_produto` mantido (hoje só a chave primária pode falhar).
 
 ### P7. Validação do teste de concorrência
 **Objetivo:** confirmar que os testes de concorrência dependem do bloqueio de escrita antecipado e não passam por acaso.
 
-**Interação (resumo):** teste de mutação manual: `BEGIN IMMEDIATE` substituído temporariamente por `BEGIN` em `app/infra/banco.py` (alteração não commitada) e `tests/servicos` executado 3 vezes.
+**Interação (resumo):** teste de mutação manual: `BEGIN IMMEDIATE` substituído temporariamente por `BEGIN` em `app/infra/banco.py` e `tests/servicos` executado 3 vezes; alteração revertida em seguida.
 
 - **Técnica:** teste de mutação manual (quebrar a proteção de propósito para verificar que os testes falham).
 - **Validação:** nas 3 execuções, os 2 testes de concorrência falharam com `sqlite3.OperationalError: database is locked`, no `UPDATE` que sucede a leitura do produto.
 - **Resultado:** a proteção vem do `BEGIN IMMEDIATE`: com `BEGIN`, a transação lê o estoque e só depois tenta escrever, e o SQLite recusa a promoção de leitura para escrita quando há outra escrita concorrente.
-- **Decisão:** manter `BEGIN IMMEDIATE`; os testes de concorrência ficam como proteção contra regressão.
+- **Decisão:** manter `BEGIN IMMEDIATE`; os testes de concorrência ficam como proteção contra regressão. Evidência citada no README (aspecto 3 da visão de engenharia).
 
 ---
 
