@@ -67,7 +67,7 @@
 - **Técnica:** prompt estruturado com critério de priorização (severidade) e separação entre "corrigir agora" e "registrar como limitação".
 - **Validação:** riscos conferidos por leitura do código-fonte do repositório.
 - **Resultado:** quantidade sem limite máximo (valores acima de 64 bits não são aceitos pelo SQLite); erros inesperados e rotas inexistentes fora do formato de erro padrão; `.coverage` fora do `.gitignore`; erro de integridade qualquer tratado como "produto já existe".
-- **Decisão:** limite de quantidade, `.gitignore` e README corrigidos; o ponto sobre erros inesperados e rotas inexistentes foi registrado em 'Limitações' do README.
+- **Decisão:** limite de quantidade, `.gitignore` e README corrigidos; o ponto sobre erros inesperados e rotas inexistentes foi registrado em 'Limitações' do README. tratamento de erro de integridade em inserir_produto mantido (hoje só a chave primária pode falhar)
 
 ### P7. Validação do teste de concorrência
 **Objetivo:** confirmar que os testes de concorrência dependem do bloqueio de escrita antecipado e não passam por acaso.
