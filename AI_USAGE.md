@@ -47,7 +47,17 @@
 - **Validação:** suíte executada a cada etapa (24, 32, 63 e 64 testes passando ao fim de cada etapa).
 - **Resultado:** código e testes por camada produzidos com apoio da IA.
 
-### P5. Análise de cobertura dos testes
+### P5. Revisão da documentação
+**Objetivo:** garantir que o README cobre o que o case pede, sem excesso e sem afirmações infundadas.
+
+**Prompt (trecho):**
+> verifique o readme, leia o case novamente e verifique se ele está contendo o que o case pede e nada mais que isso, sem inventar
+
+- **Técnica:** verificação contra a fonte, com critério explícito (cobertura e ausência de excesso).
+- **Validação:** cada item da documentação conferido com o enunciado.
+- **Resultado:** itens fora do pedido removidos; afirmações sem sustentação corrigidas (ver "Erros e limitações").
+
+### P6. Análise de cobertura dos testes
 **Objetivo:** identificar lacunas de teste relevantes além do percentual de linhas.
 
 **Prompt (trecho):**
@@ -56,9 +66,10 @@
 - **Técnica:** prompt estruturado (papel, contexto, tarefa, restrições, formato de saída), elaborado com apoio da IA.
 - **Validação:** relatório do `pytest-cov` (99% das linhas; apenas `app/main.py`, código de ligação, sem cobertura; 64 testes passando).
 - **Resultado:** lacunas de comportamento apontadas: quantidade sem limite máximo e concorrência testada só em reservas (faltava a liberação simultânea da mesma reserva).
-- **Decisão:** limite de 1.000.000.000 por operação (API e domínio) e três casos de teste novos de comportamento; `app/main.py` mantido sem teste.
+- **Decisão:** limite de 1.000.000.000 por operação (API e domínio) e três casos de teste novos (quantidade acima do limite no domínio e na API, e liberação simultânea da mesma reserva); `app/main.py` mantido sem teste.
+- **Validação após as mudanças:** suíte completa com 67 testes passando.
 
-### P6. Revisão crítica do código
+### P7. Revisão crítica do código
 **Objetivo:** levantar riscos de consistência, concorrência e tratamento de erros no código do repositório.
 
 **Prompt (trecho):**
@@ -67,7 +78,7 @@
 - **Técnica:** prompt estruturado com critério de priorização (severidade) e separação entre "corrigir agora" e "registrar como limitação".
 - **Validação:** riscos conferidos por leitura do código-fonte do repositório.
 - **Resultado:** quantidade sem limite máximo (valores acima de 64 bits não são aceitos pelo SQLite); erros inesperados e rotas inexistentes fora do formato de erro padrão; `.coverage` fora do `.gitignore`; erro de integridade qualquer tratado como "produto já existe".
-- **Decisão:** limite de quantidade, `.gitignore` e README corrigidos; o ponto sobre erros inesperados e rotas inexistentes foi registrado em 'Limitações' do README.
+- **Decisão:** limite de quantidade, `.gitignore` e README corrigidos; os demais pontos registrados em "Limitações" do README.
 
 ---
 
@@ -84,6 +95,6 @@
 
 ### Erros e limitações identificados
 - **Afirmação exagerada:** a IA indicou que a decisão sobre eventos "altera o esquema do banco, então precisa vir antes do código". Ao ser pedido um exemplo, reconheceu o exagero: a tabela de eventos seria adicional.
-- **README com afirmações sem sustentação:** o primeiro rascunho dizia que "cada camada só conhece a de baixo" (falso, pois a API importa domínio e infra) e que o projeto funcionava com Python 3.10 ou superior (nunca testado). Corrigidas após a revisão contra o case. Uma terceira, "todos os erros usam o mesmo formato", era falsa para rotas inexistentes e erros inesperados; foi corrigida após a revisão do código (P6).
-- **Código gerado sem limite máximo de quantidade:** risco de erro 500 ao gravar valores muito grandes; identificado na revisão (P6) e corrigido.
+- **README com afirmações sem sustentação:** o primeiro rascunho dizia que "cada camada só conhece a de baixo" (falso, pois a API importa domínio e infra) e que o projeto funcionava com Python 3.10 ou superior (nunca testado). Corrigidas após a revisão contra o case (P5). Uma terceira, "todos os erros usam o mesmo formato", era falsa para rotas inexistentes e erros inesperados; foi corrigida após a revisão do código (P7).
+- **Código gerado sem limite máximo de quantidade:** risco de erro 500 ao gravar valores muito grandes; identificado na revisão (P7) e corrigido.
 - **Instruções de setup densas demais:** reformuladas em passo a passo após solicitação.
