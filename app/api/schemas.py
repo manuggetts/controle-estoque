@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field, StrictInt
 
+from app.dominio.modelos import QUANTIDADE_MAXIMA
+
 
 # ---------- entrada ----------
 
@@ -9,16 +11,16 @@ class CadastroProduto(BaseModel):
 
 
 class Quantidade(BaseModel):
-    quantidade: StrictInt = Field(gt=0)
+    quantidade: StrictInt = Field(gt=0, le=QUANTIDADE_MAXIMA)
 
 
 class NovaReserva(BaseModel):
-    quantidade: StrictInt = Field(gt=0)
+    quantidade: StrictInt = Field(gt=0, le=QUANTIDADE_MAXIMA)
     referencia: str = Field(min_length=1)
 
 
 class NovoBloqueio(BaseModel):
-    quantidade: StrictInt = Field(gt=0)
+    quantidade: StrictInt = Field(gt=0, le=QUANTIDADE_MAXIMA)
     motivo: str | None = None
 
 

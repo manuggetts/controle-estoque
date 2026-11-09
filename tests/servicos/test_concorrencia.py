@@ -2,7 +2,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
-from app.dominio.erros import EstoqueInsuficiente
+from app.dominio.erros import EstoqueInsuficiente, JaLiberado
 from app.infra.banco import Banco
 from app.servicos.estoque import ServicoEstoque
 
@@ -33,3 +33,25 @@ def test_reservas_simultaneas_nunca_ultrapassam_o_disponivel(servico):
 
     produto = servico.consultar_produto("CAMISA-P")
     assert (produto.total, produto.reservado, produto.disponivel) == (5, 5, 0)
+
+
+def test_liberacao_simultanea_da_mesma_reserva_ocorre_uma_unica_vez(servico):
+    servico.cadastrar_produto("CAMISA-P")
+    servico.entrada("CAMISA-P", 5)
+    reserva = servico.reservar("CAMISA-P", 3, "PED-1")
+
+    def tentar_liberar(_) -> str:
+        try:
+            servico.liberar_reserva(reserva.id)
+            return "ok"
+        except JaLiberado:
+            return "ja_liberado"
+
+    with ThreadPoolExecutor(max_workers=10) as pool:
+        resultados = list(pool.map(tentar_liberar, range(10)))
+
+    assert resultados.count("ok") == 1
+    assert resultados.count("ja_liberado") == 9
+
+    produto = servico.consultar_produto("CAMISA-P")
+    assert (produto.total, produto.reservado, produto.disponivel) == (5, 0, 5)

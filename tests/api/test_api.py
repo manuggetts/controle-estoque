@@ -95,7 +95,8 @@ def test_operacoes_em_produto_inexistente_retornam_404(cliente, caminho, corpo):
 @pytest.mark.parametrize(
     "corpo",
     [{"quantidade": 0}, {"quantidade": -1}, {"quantidade": 1.5},
-     {"quantidade": "3"}, {"quantidade": True}, {}],
+     {"quantidade": "3"}, {"quantidade": True}, {},
+     {"quantidade": 1_000_000_001}],
 )
 def test_quantidade_invalida_retorna_422_sem_alterar_estado(cliente, corpo):
     criar_produto(cliente)

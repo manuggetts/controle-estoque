@@ -31,7 +31,7 @@ def test_entrada_soma_ao_total_e_ao_disponivel(produto):
     assert (produto.total, produto.disponivel) == (15, 15)
 
 
-@pytest.mark.parametrize("invalida", [0, -1, 1.5, "3", True, None])
+@pytest.mark.parametrize("invalida", [0, -1, 1.5, "3", True, None, 1_000_000_001])
 def test_quantidade_invalida_e_rejeitada_sem_alterar_estado(produto, invalida):
     antes = estado(produto)
     with pytest.raises(DadoInvalido):

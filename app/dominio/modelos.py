@@ -14,10 +14,20 @@ def _novo_id() -> str:
     return str(uuid4())
 
 
+QUANTIDADE_MAXIMA = 1_000_000_000  # por operação; evita estouro do INTEGER de 64 bits do SQLite
+
+
 def validar_quantidade(quantidade) -> None:
-    """Quantidade precisa ser um inteiro maior que zero (bool não vale)."""
-    if isinstance(quantidade, bool) or not isinstance(quantidade, int) or quantidade <= 0:
-        raise DadoInvalido("A quantidade deve ser um inteiro maior que zero.")
+    """Quantidade precisa ser um inteiro entre 1 e QUANTIDADE_MAXIMA (bool não vale)."""
+    if (
+        isinstance(quantidade, bool)
+        or not isinstance(quantidade, int)
+        or quantidade <= 0
+        or quantidade > QUANTIDADE_MAXIMA
+    ):
+        raise DadoInvalido(
+            f"A quantidade deve ser um inteiro entre 1 e {QUANTIDADE_MAXIMA}."
+        )
 
 
 @dataclass
